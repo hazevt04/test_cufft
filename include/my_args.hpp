@@ -11,7 +11,7 @@ const std::string default_frequency_bin_filename = "frequency_bin_autocorr.5.9GH
 
 constexpr int default_seed = 0;
 constexpr int default_num_samples = 4000;
-constexpr int default_fft_size = 4000;
+constexpr int default_fft_size = 4096;
 constexpr size_t default_num_sample_bytes = default_num_samples * sizeof(cufftComplex);
 constexpr size_t default_num_frequency_bin_bytes = default_num_samples * sizeof(cufftComplex);
 

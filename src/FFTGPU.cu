@@ -1,10 +1,6 @@
 
 #include "FFTGPU.hpp"
 
-#include "my_cufft_utils.hpp"
-#include "my_cuda_utils.hpp"
-#include "my_utils.hpp"
-
 
 FFTGPU::FFTGPU( 
    const int new_num_samples, 
@@ -98,14 +94,14 @@ void FFTGPU::initialize_samples( ) {
    try {
       if( mode_select == mode_select_t::Sinusoidal ) {
          dout << __func__ << "(): Sinusoidal Sample Test Selected\n";
-         for( size_t index = 0; index < num_samples; ++index ) {
-            float t_val_real = AMPLITUDE*cos(2*PI*FREQ*float(index)/float(num_samples));
-            float t_val_imag = AMPLITUDE*sin(2*PI*FREQ*float(index)/float(num_samples));
+         for( size_t index = 0; index < adjusted_num_samples; ++index ) {
+            float t_val_real = AMPLITUDE*cos(2*PI*FREQ*static_cast<float>(index)/static_cast<float>(adjusted_num_samples));
+            float t_val_imag = AMPLITUDE*sin(2*PI*FREQ*static_cast<float>(index)/static_cast<float>(adjusted_num_samples));
             samples[index] = make_cuFloatComplex( t_val_real, t_val_imag );
          } 
       } else if ( mode_select == mode_select_t::Random ) {
          dout << __func__ << "(): Random Sample Test Selected\n";
-         gen_cufftComplexes( samples.data(), num_samples, -50.0, 50.0 );
+         gen_cufftComplexes( samples.data(), adjusted_num_samples, -50.0, 50.0 );
       } else if ( mode_select == mode_select_t::Filebased ) {
          dout << __func__ << "(): File-Based Sample Test Selected. File is " << filepath << "\n";
          read_binary_file<cufftComplex>( 
@@ -115,7 +111,7 @@ void FFTGPU::initialize_samples( ) {
             debug );
       }           
       if (debug) {
-         print_cufftComplexes( samples.data(), num_samples, "Samples: ",  " ",  "\n" ); 
+         print_cufftComplexes( samples.data(), adjusted_num_samples, "Samples: ",  " ",  "\n" ); 
       }
    } catch( std::exception& ex ) {
       throw std::runtime_error{
@@ -195,10 +191,10 @@ void FFTGPU::run() {
       check_results();
 
       std::cout << "It took the GPU " << gpu_milliseconds 
-         << " milliseconds to process " << num_samples 
+         << " milliseconds to process " << adjusted_num_samples 
          << " samples\n";
 
-      float samples_per_second = (num_samples*1000.f)/gpu_milliseconds;
+      float samples_per_second = (adjusted_num_samples*1000.f)/gpu_milliseconds;
       std::cout << "That's a rate of " << samples_per_second/1e6 << " Msamples processed per second\n"; 
 
 

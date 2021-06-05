@@ -9,14 +9,14 @@
 #include "pinned_vec_file_io_funcs.hpp"
 
 #include "my_args.hpp"
-
 #include "my_cufft_utils.hpp"
 #include "my_cuda_utils.hpp"
 #include "my_utils.hpp"
+
 #include <math.h>
 
 constexpr float PI = 3.1415926535897238463f;
-constexpr float FREQ = 1000.f;
+constexpr float FREQ = 1024.f;
 constexpr float AMPLITUDE = 50.f;
 
 class FFTGPU {
